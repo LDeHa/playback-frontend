@@ -1,119 +1,78 @@
-# ⚽ Playback - AI Sports Highlights Editor
+# Playback — 프론트엔드
 
-> AI 기반 스포츠 하이라이트 자동 편집 웹 서비스
+축구 경기 영상을 업로드하고 AI가 분류한 하이라이트를 확인·편집하는 React 웹 화면입니다. 충북대학교 졸업작품 팀의 [원본 프론트엔드](https://github.com/CBNU-playback/playback)를 포크했습니다.
 
-충북대학교 졸업작품으로 진행하는 Playback팀의 프로젝트입니다.
+프로젝트 전체 구조와 제 담당 역할은 **[백엔드 저장소](https://github.com/LDeHa/playback-backend)**에 정리했습니다. 이 저장소에는 팀이 함께 만든 화면 코드와 별도 `train` 브랜치의 학습 코드를 보존했습니다.
 
-![Main Banner](./docs/images/banner.png)
+## 사용자 흐름
 
-## 📖 프로젝트 소개
+1. 축구 경기 영상을 업로드합니다.
+2. 백엔드가 만든 하이라이트 구간과 이벤트 라벨을 확인합니다.
+3. 구간을 선택하거나 추가·삭제하고 영상으로 미리 봅니다.
+4. 텍스트 표시와 전환 옵션을 설정한 뒤 결과 영상을 다운로드합니다.
 
-**Playback**은 스포츠(축구) 경기 영상에서 **AI를 활용해 하이라이트 장면을 자동으로 감지하고 편집**할 수 있는 웹 기반 서비스입니다.
+영상 분석과 최종 영상 내보내기는 Django 백엔드와 연결됩니다.
 
-영상 편집자와 콘텐츠 크리에이터들이 수 시간이 걸리는 하이라이트 편집 작업을 **몇 분 만에** 완료할 수 있도록 돕습니다.
+## 실행 화면
 
-### 🎯 주요 기능
+팀 저장소에 있던 실행 화면입니다. 아래 이미지는 이번 정리 과정에서 새로 실행한 결과가 아닙니다.
 
-- **🤖 AI 자동 하이라이트 감지**: 골, 슈팅, 세이브 등 주요 장면 자동 추출
-- **✂️ 직관적인 타임라인 편집**: 드래그 앤 드롭으로 간편한 구간 편집
-- **🎬 커스터마이징**: 텍스트 오버레이, 장면 전환 효과 추가
-- **💾 빠른 내보내기**: 편집된 하이라이트 영상 즉시 다운로드
-- **🎤 자동 자막 생성**: AI 음성 인식을 통한 자막 생성
+### 업로드
 
-## 📸 실행 화면
+![영상 업로드 화면](docs/images/upload.png)
 
-### 메인 페이지
-![Main Page](./docs/images/main-page.png)
+### 분석
 
-### 비디오 업로드
-![Upload](./docs/images/upload.png)
+![AI 분석 화면](docs/images/inference.png)
 
-### AI 추론
-![AI Inference](./docs/images/inference.png)
+### 결과
 
-### 결과물
-![Output](./docs/images/output.png)
+![하이라이트 결과 화면](docs/images/output.png)
 
-## 🛠️ 기술 스택
+## 주요 파일
 
-### Frontend
-- **React** 17 - UI 프레임워크
-- **Material-UI** - 디자인 시스템
-- **Axios** - HTTP 클라이언트
-- **React Router** - 페이지 라우팅
-- **FFmpeg.wasm** - 클라이언트 사이드 비디오 처리
+| 파일 | 내용 |
+| --- | --- |
+| [src/pages/Home.js](src/pages/Home.js) | 영상 업로드, 구간 편집, 결과 내보내기 |
+| [src/components/VideoPlayer.js](src/components/VideoPlayer.js) | 영상 재생 화면 |
+| [src/components/AIVideoEditor.js](src/components/AIVideoEditor.js) | 업로드·자막 요청 등 편집 관련 컴포넌트 |
+| [src/App.js](src/App.js) | 페이지 라우팅 |
+| [package.json](package.json) | 의존성과 실행 명령 |
 
-### Backend (별도 레포지토리)
-- **Django** + **DRF** - REST API 서버
-- **OpenCV** - 영상 처리 및 로고 탐지
-- **Whisper** - AI 음성 인식 (자막 생성)
-- **PyTorch** - 딥러닝 모델
+기술: React 17 · React Router · Material UI · Axios
 
-## 🚀 시작하기
+## 모델 학습 코드
 
-### 사전 요구사항
-```bash
-Node.js 14.x 이상
-npm 6.x 이상
-```
+`train` 브랜치에 `LDeHa` 계정으로 올린 세 파일이 있습니다. 기본 브랜치의 화면 코드와 별도로 보관된 작업입니다.
 
-### 설치 및 실행
+- [train_dataset.py](https://github.com/LDeHa/playback-frontend/blob/train/train_dataset.py): 자막과 이벤트 라벨을 시간 구간으로 연결해 학습 데이터 구성
+- [bert_train.py](https://github.com/LDeHa/playback-frontend/blob/train/bert_train.py): BERT 분류 모델 학습, 분류 리포트와 혼동 행렬 저장
+- [predict_action.py](https://github.com/LDeHa/playback-frontend/blob/train/predict_action.py): 구간별 이벤트 예측과 결과 비교
+
+[원본 커밋 확인](https://github.com/LDeHa/playback-frontend/commit/b8b38bc)
+
+## 실행 준비
 
 ```bash
-# 저장소 클론
-git clone https://github.com/CBNU-playback/playback.git
-cd playback
-
-# 의존성 설치
-npm install
-
-# 개발 서버 실행
+git clone https://github.com/LDeHa/playback-frontend.git
+cd playback-frontend
+npm ci
 npm start
 ```
 
-브라우저에서 [http://localhost:3000](http://localhost:3000) 접속
+화면의 기본 주소는 `http://localhost:3000`입니다. 영상 업로드·분석·내보내기에는 [백엔드](https://github.com/LDeHa/playback-backend)가 필요합니다.
 
-### 백엔드 연결
+### 백엔드 연결 설정
 
-백엔드 서버가 필요합니다. [playback-BE](https://github.com/CBNU-playback/playback-BE) 레포지토리를 참고하세요.
+현재 `Home.js`와 `AIVideoEditor.js`에는 팀 개발 환경의 API 주소가 직접 들어 있습니다. 로컬 실행 전 두 파일의 주소를 실행 중인 백엔드 주소로 맞춰야 합니다.
 
-```bash
-# 백엔드 기본 주소
-http://localhost:8000
-```
+`.env`의 `REACT_APP_API_BASE_URL`은 `src/api/videoApi.js`에서 사용하지만, 모든 요청에 적용된 상태는 아닙니다. `package.json`의 proxy 설정만 바꿔도 위의 직접 호출 주소는 바뀌지 않습니다.
 
-## 💡 사용 방법
+## 현재 상태
 
-### 1️⃣ 비디오 업로드
-- 메인 페이지에서 **"비디오 업로드"** 버튼 클릭
-- 축구 경기 영상 파일 선택 (mp4, mkv, avi 등)
-- 업로드 완료 대기
+- README에 존재하지 않던 이미지 경로를 정리하고 실제 화면 세 장을 연결했습니다.
+- 이번 정리에서는 영상 처리 환경을 실행하지 않았습니다.
+- `src/App.test.js`에는 Create React App의 기본 테스트가 남아 있어 현재 화면의 기능 검증 결과로 사용할 수 없습니다.
 
-### 2️⃣ AI 하이라이트 자동 감지
-- 업로드 완료 후 자동으로 AI 분석 시작
-- 골, 슈팅, 코너킥 등 주요 장면 자동 감지
-- 타임라인에 하이라이트 구간 표시
-
-### 3️⃣ 하이라이트 편집
-- 타임라인에서 구간 선택/수정
-- 불필요한 구간 삭제
-- 커스텀 구간 추가
-- 텍스트 오버레이 설정
-- 장면 전환 효과 선택
-
-### 4️⃣ 내보내기
-- **"하이라이트 내보내기"** 버튼 클릭
-- 편집된 영상 다운로드
-
-## 👥 팀 구성
-
-| 이름 | 역할 | GitHub |
-|------|------|--------|
-| 배기원(중도 휴학) | 팀장, AI 개발, 프로젝트 관리 |
-| 김동원 | 프론트엔드 개발, 미팅 관리 |
-| 이동규 | 백엔드 개발, 자료 취합 |
-
-## 🔗 관련 레포지토리
-
-- **Backend API**: [playback-BE](https://github.com/CBNU-playback/playback-BE)
+화면 코드는 팀 공동 결과물입니다. 제 담당 역할과 확인 가능한 개인 커밋은 [백엔드 기여 문서](https://github.com/LDeHa/playback-backend/blob/main/docs/contributions.md)에 구분해 정리했습니다.
 
